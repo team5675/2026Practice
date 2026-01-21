@@ -66,7 +66,7 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("P");
+        autoChooser = AutoBuilder.buildAutoChooser("Moveshootaroundmap_leah.auto");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();
