@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class Constants {
 
     public class LimelightConstants {
-        public static String limelightName = "limelight";
+        public static String limelightName = "limelight-hailo";
         public static double kTolerance = 0.2;
         public static double minStrafe = 0.3;
     }
