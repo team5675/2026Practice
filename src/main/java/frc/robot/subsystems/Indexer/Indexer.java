@@ -17,7 +17,7 @@ public class Indexer extends SubsystemBase {
   //Stop motor
   public SparkMax motor;
   public Indexer() {
-    motor = new SparkMax(Constants.IndexerConstants.motorid, MotorType.kBrushless);
+    motor = new SparkMax(Constants.IndexerConstants.indexerMotorId, MotorType.kBrushless);
   }
   @Override
   public void periodic() {  }

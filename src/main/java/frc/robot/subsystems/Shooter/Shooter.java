@@ -4,5 +4,42 @@
 
 package frc.robot.subsystems.Shooter;
 
-/** Add your docs here. */
-public class Shooter {}
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+public class Shooter extends SubsystemBase {
+  /** Creates a new Shooter. */
+  public SparkMax shooterMotor;
+  public boolean isShooterActive = false;
+  public Shooter() {
+    shooterMotor = new SparkMax(Constants.ShooterConstants.shooterMotorId, MotorType.kBrushless);
+  }
+
+  public void startShooting() {
+    if (isShooterActive = false) {
+      shooterMotor.set(1);
+      isShooterActive = true;
+    }
+  }
+
+  public void stopShooting() {
+    shooterMotor.set(0);
+    isShooterActive = false;
+  }
+
+  @Override
+  public void periodic() {
+    
+  }
+
+  public static Shooter instance;
+  public static Shooter getInstance() {
+    if (instance == null) {
+      instance = new Shooter();
+    }
+    return instance;
+  }
+}

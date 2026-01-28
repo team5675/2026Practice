@@ -88,11 +88,18 @@ public class Constants {
         public static final Pose2d PROCESSOR_RED = new Pose2d();
     }
     public class IndexerConstants {
-        public static final int motorid = 0;
+        public static final int indexerMotorId = 0;
         
     }
     public class ClimberConstants {
-        public static final int motorid = 0;
+        public static final int climberMotorId = 0;
         
+    }
+    public class IntakeConstants {
+        public static final int intakeMotorId = 0;
+        public static final int extendMotorId = 0;
+    }
+    public class ShooterConstants {
+        public static final int shooterMotorId = 0;
     }
 }
