@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.lang.invoke.LambdaConversionException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -21,6 +23,7 @@ import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 //import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Shooter.Shooter;
 
 public class RobotContainer {
 
@@ -119,11 +122,10 @@ public class RobotContainer {
         driverController.leftTrigger()
             .whileTrue(new DriveToPoseCommand(drivetrain, "left"));
 
-        driverController.rightTrigger()
-            .whileTrue(new DriveToPoseCommand(drivetrain, "right"));
-
-        drivetrain.registerTelemetry(logger::telemeterize);
+        driverController.rightTrigger().whileTrue(Commands.run(() -> Shooter.getInstance().startShooting()));
+        driverController.rightTrigger().onFalse(Commands.run(() -> Shooter.getInstance().stopShooting()));
     }
+
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
