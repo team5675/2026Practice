@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Backtoshoot"
+            "pathName": "OUTPOST_BackToOutpostToShoot"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 9.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "PrepareToApproach"
+            "pathName": "OUTPOST_PrepareClimberApproach"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Approach"
+            "pathName": "OUTPOST_ApproachClimber"
           }
         }
       ]
