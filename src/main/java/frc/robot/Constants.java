@@ -100,6 +100,8 @@ public class Constants {
         public static final int extendMotorId = 0;
     }
     public class ShooterConstants {
-        public static final int shooterMotorId = 0;
+        public static final int flyWheelMotorId = 0;
+        public static final int providerMotorId = 0;
+        public static final int hoodMotorId = 0;
     }
 }

@@ -12,22 +12,52 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
-  public SparkMax shooterMotor;
-  public boolean isShooterActive = false;
+  public SparkMax flywheelMotor;
+  public SparkMax hoodMotor;
+  public SparkMax providerMotor;
+  public boolean isFlywheelActive = false;
+  public boolean isProviderActive = false;
   public Shooter() {
-    shooterMotor = new SparkMax(Constants.ShooterConstants.shooterMotorId, MotorType.kBrushless);
+    flywheelMotor = new SparkMax(Constants.ShooterConstants.flyWheelMotorId, MotorType.kBrushless);
+    hoodMotor = new SparkMax(Constants.ShooterConstants.hoodMotorId, MotorType.kBrushless);
+    providerMotor = new SparkMax(Constants.ShooterConstants.providerMotorId, MotorType.kBrushless);
   }
 
-  public void startShooting() {
-    if (isShooterActive = false) {
-      shooterMotor.set(1);
-      isShooterActive = true;
+  /* 
+     change controls for shooter later one for targeting, 
+     one for activate/deactivate and one for shooting
+  */ 
+
+  public void activateShooter() {
+    //activate shooter at the start of the match
+    if (isFlywheelActive = false) {
+      flywheelMotor.set(1);
+      isFlywheelActive = true;
+      //change to a non-lethal speed
     }
   }
 
+  public void target() {
+    //rotate robot and hood into position
+    
+  }
+
+  public void startShooting() {
+   if (isProviderActive = false) {
+      providerMotor.set(1);
+      isProviderActive = true;
+   }
+  }
+
   public void stopShooting() {
-    shooterMotor.set(0);
-    isShooterActive = false;
+    providerMotor.set(0);
+    isProviderActive = false;
+  }
+  
+
+  public void deactivateShooter() {
+    flywheelMotor.set(0);
+    isFlywheelActive = false;
   }
 
   @Override
