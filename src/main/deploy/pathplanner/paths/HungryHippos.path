@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.665,
-        "y": 4.094
+        "x": 7.29323076923077,
+        "y": 6.511807692307692
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9617413073437058,
-        "y": 4.103090707616642
+        "x": 7.467653846153848,
+        "y": 6.069935897435897
+      },
+      "isLocked": false,
+      "linkedName": "TEST"
+    },
+    {
+      "anchor": {
+        "x": 8.432794871794874,
+        "y": 4.1047692307692305
+      },
+      "prevControl": {
+        "x": 8.439327724358977,
+        "y": 4.653475160256409
+      },
+      "nextControl": {
+        "x": 8.426262019230771,
+        "y": 3.5560633012820517
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.665,
-        "y": 4.094
+        "x": 7.29323076923077,
+        "y": 1.069807692307693
       },
       "prevControl": {
-        "x": 2.8544107496876423,
-        "y": 4.10921133034143
+        "x": 7.65370512820513,
+        "y": 1.3837692307692313
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "C/LSHOOT"
+      "linkedName": "TestAgain"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -141.14662565964662
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -48.468229258917134
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

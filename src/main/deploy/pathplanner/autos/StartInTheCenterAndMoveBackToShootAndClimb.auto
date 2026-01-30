@@ -17,9 +17,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CENTER_PrepareClimberApproach"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CENTER_PrepareClimberApproach"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RaiseClimb"
+                }
+              }
+            ]
           }
         },
         {
@@ -27,11 +40,17 @@
           "data": {
             "pathName": "CENTER_ApproachClimber"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber"
+          }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

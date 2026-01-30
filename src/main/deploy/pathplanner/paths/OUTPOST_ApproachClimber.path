@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0183036773428242,
-        "y": 2.813831553973902
+        "x": 1.085540242163468,
+        "y": 3.0840413481885247
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OPCA-AC"
     },
     {
       "anchor": {
-        "x": 1.061,
-        "y": 2.7923131672597865
+        "x": 1.072,
+        "y": 2.826
       },
       "prevControl": {
-        "x": 1.0505812574139983,
-        "y": 2.5018149466192163
+        "x": 1.0562894496173838,
+        "y": 2.5425446016682582
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ClimbPosition"
     }
   ],
   "rotationTargets": [],

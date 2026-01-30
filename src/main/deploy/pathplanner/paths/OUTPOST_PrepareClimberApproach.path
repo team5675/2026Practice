@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0720996441281145,
-        "y": 2.4480189798339267
+        "x": 1.0646914291605802,
+        "y": 2.5360847308595384
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.0613404507710564,
-        "y": 2.4802965599051015
+        "x": 1.061,
+        "y": 2.48
       },
       "prevControl": {
-        "x": 0.5448991696322664,
-        "y": 0.6942704626334513
+        "x": 0.6115611193545762,
+        "y": 0.7734819192903515
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OPCA-AC"
     }
   ],
   "rotationTargets": [],

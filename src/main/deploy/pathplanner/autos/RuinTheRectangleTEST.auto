@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OUTPOST_BackToOutpostToShoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 9.0
+            "pathName": "TESTAUTOLEFT_GoIntoNeutralZone"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "OUTPOST_PrepareClimberApproach"
+            "pathName": "HungryHippos"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "OUTPOST_ApproachClimber"
+            "pathName": "Piuroette"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SuperGood"
           }
         }
       ]
