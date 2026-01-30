@@ -19,13 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LEFT_DoRotation"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LEFT_FromRotateToShoot"
+            "pathName": "LEFT_RotateToShoot"
           }
         },
         {
