@@ -11,27 +11,34 @@
           }
         },
         {
-          "type": "wait",
+          "type": "parallel",
           "data": {
-            "waitTime": 9.0
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OUTPOST_PrepareClimberApproach"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RaiseClimb"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "OUTPOST_PrepareClimberApproach"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OUTPOST_ApproachClimber"
+            "name": "Climber"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

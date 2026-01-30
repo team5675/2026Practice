@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.lang.invoke.LambdaConversionException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -22,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Climber.ClimbCommand;
+import frc.robot.subsystems.Climber.RaiseClimbCommand;
 //import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Shooter.Shooter;
 
@@ -69,6 +72,9 @@ public class RobotContainer {
 
 
     public RobotContainer() {
+        NamedCommands.registerCommand("RaiseClimber", new RaiseClimbCommand());
+        NamedCommands.registerCommand("Climber", new ClimbCommand());
+
         autoChooser = AutoBuilder.buildAutoChooser("Moveshootaroundmap_leah.auto");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
