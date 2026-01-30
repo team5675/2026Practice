@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OUTPOST_BackToOutpostToShoot"
+            "pathName": "LEFT_CenterToShoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -17,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "OUTPOST_PrepareClimberApproach"
+                  "pathName": "LEFT_PrepareClimberApproach"
                 }
               },
               {
@@ -27,6 +33,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_ApproachClimber"
           }
         },
         {

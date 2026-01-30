@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.534744958481614,
-        "y": 2.049928825622776
+        "x": 0.5556583629893244,
+        "y": 4.907115384615384
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0290860231385093,
-        "y": 2.8998167063447893
+        "x": 1.556065884183807,
+        "y": 4.968659473068378
       },
       "isLocked": false,
-      "linkedName": "CPCA-AC"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.072,
-        "y": 2.826
+        "x": 1.665,
+        "y": 5.148576512455516
       },
       "prevControl": {
-        "x": 1.58052745352059,
-        "y": 1.9872980710776766
+        "x": 0.8778816195100518,
+        "y": 5.190110878883027
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ClimbPosition"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.87991843979425
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

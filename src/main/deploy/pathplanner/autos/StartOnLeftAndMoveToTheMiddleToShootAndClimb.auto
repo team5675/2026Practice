@@ -1,0 +1,74 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": " LEFT_DepotToCollect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_CollectDepot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_DoRotation"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_FromRotateToShoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LEFT_PrepareClimberApproach"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RaiseClimb"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_ApproachClimber"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

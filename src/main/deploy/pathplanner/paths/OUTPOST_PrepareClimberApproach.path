@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.0613404507710564,
-        "y": 2.4802965599051015
+        "x": 1.061,
+        "y": 2.48
       },
       "prevControl": {
-        "x": 0.6119015701256327,
-        "y": 0.773778479195453
+        "x": 0.6115611193545762,
+        "y": 0.7734819192903515
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OPCA-AC"
     }
   ],
   "rotationTargets": [],
