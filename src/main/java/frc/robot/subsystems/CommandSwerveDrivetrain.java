@@ -7,32 +7,27 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import edu.wpi.first.math.estimator.*;
-import frc.robot.*;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -54,9 +49,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
-
-    public SwerveDrivePoseEstimator m_poseEstimator;
-    public Field2d m_field;
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -138,27 +130,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        this.configAutoBuilder();
 
-        // SwerveDriveKinematics
-        // Rotation2d
-        // SwerveModulePosition[]
-        // Pose2d
-        m_poseEstimator = new SwerveDrivePoseEstimator(
-            this.getKinematics(),
-            this.getPigeon2().getRotation2d(),
-            this.getState().ModulePositions,
-            this.getState().Pose
-        );
-
-        this.getPigeon2().reset();
-
-        this.m_field = new Field2d();
-        SmartDashboard.putData("Field", m_field);
-
-        LimelightHelpers.setCameraPose_RobotSpace(Constants.LimelightConstants.limelightName, 0.307,0.0,0.333, 0.0, -18, 
-        0.0  // Since your Limelight faces forward, CAMERA_YAW should be 0°
-);
+        setupDefaults();
     }
 
     /**
@@ -183,27 +156,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        this.configAutoBuilder();
-        
-        // SwerveDriveKinematics
-        // Rotation2d
-        // SwerveModulePosition[]
-        // Pose2d
-        m_poseEstimator = new SwerveDrivePoseEstimator(
-            this.getKinematics(),
-            this.getPigeon2().getRotation2d(),
-            this.getState().ModulePositions,
-            this.getState().Pose
-        );
 
-        this.m_field = new Field2d();
-        SmartDashboard.putData("Field", m_field);
-
-        this.getPigeon2().reset();
-
-        LimelightHelpers.setCameraPose_RobotSpace(Constants.LimelightConstants.limelightName, 0.307,0.0,0.333, 0.0, -18, 
-        0.0  // Since your Limelight faces forward, CAMERA_YAW should be 0°
-);
+        setupDefaults();
     }
 
     /**
@@ -236,27 +190,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        this.configAutoBuilder();
 
-        // SwerveDriveKinematics
-        // Rotation2d
-        // SwerveModulePosition[]
-        // Pose2d
-        m_poseEstimator = new SwerveDrivePoseEstimator(
-            this.getKinematics(),
-            this.getPigeon2().getRotation2d(),
-            this.getState().ModulePositions,
-            this.getState().Pose
-        );
+        setupDefaults();
+    }
 
-        this.m_field = new Field2d();
-        SmartDashboard.putData("Field", m_field);
-
-        this.getPigeon2().reset();
-
-        LimelightHelpers.setCameraPose_RobotSpace(Constants.LimelightConstants.limelightName, 0.307,0.0,0.333, 0.0, -18, 
-        0.0  // Since your Limelight faces forward, CAMERA_YAW should be 0°
-);
+    public Field2d m_field;
+    
+    public void setupDefaults() {
+        m_field = new Field2d();
     }
 
     /**
@@ -291,22 +232,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - m_lastSimTime;
-            m_lastSimTime = currentTime;
-
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
-    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-
     @Override
     public void periodic() {
         /*
@@ -326,87 +251,66 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        m_poseEstimator.update(this.getPigeon2().getRotation2d(), this.getState().ModulePositions);
-        //Pose Estimation using AprilTags
-        double redAllianceYaw = this.getPigeon2().getYaw().getValueAsDouble();
 
-        // If on Red Alliance add 180° to the yaw
-        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-            redAllianceYaw += 180;
+        LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
+
+        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.limelightName);
+        
+        if(poseEstimate != null && poseEstimate.tagCount > 0){
+
+            addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
         }
-        redAllianceYaw = MathUtil.inputModulus(redAllianceYaw, -180, 180);
 
-        LimelightHelpers.SetRobotOrientation(
-            Constants.LimelightConstants.limelightName,
-            redAllianceYaw,
-            0, 0, 0, 0, 0
-        );
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LimelightConstants.limelightName);
-
-        if (mt2 == null) {
-            return;
-        }
-        
-        if (!(mt2.tagCount == 0)) {
-        // If there is an april tag
-            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,0.7));
-            m_poseEstimator.addVisionMeasurement(
-                mt2.pose,
-                mt2.timestampSeconds
-            );
-            
-         }
-        
-        m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
-
-        //Debug Values
-        SmartDashboard.putNumber("Robot Rotation", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
-        SmartDashboard.putNumber("Limelight TID", LimelightHelpers.getLimelightNTDouble(Constants.LimelightConstants.limelightName, "tid"));
-        //SmartDashboard.putString("Limelight Pose", mt2.pose.toString());
-        SmartDashboard.putNumber("Robot Yaw", this.getPigeon2().getYaw().getValueAsDouble());
-        SmartDashboard.putNumber("Limelight Yaw", LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LimelightConstants.limelightName).pose.getRotation().getDegrees());
-        
+        m_field.setRobotPose(getState().Pose);
+        SmartDashboard.putData("Field",m_field);
     }
 
-    public void configAutoBuilder() {
-        try {
-            RobotConfig config = RobotConfig.fromGUISettings();
-            AutoBuilder.configure(
-                () -> m_poseEstimator.getEstimatedPosition(),   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
-                () -> getState().Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
-                (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                ),
-                new PPHolonomicDriveController(
-                    // PID constants for translation
-                    new PIDConstants(5,0,0),
-                    // PID constants for rotation
-                    //R = rotation
-                    new PIDConstants(3,0,0)
-                ),
-                config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-                this // Subsystem for requirements
-            );
-        } catch (Exception ex) {
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
-        }
+    private void startSimThread() {
+        m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+        /* Run simulation at a faster rate so PID gains behave more reasonably */
+        m_simNotifier = new Notifier(() -> {
+            final double currentTime = Utils.getCurrentTimeSeconds();
+            double deltaTime = currentTime - m_lastSimTime;
+            m_lastSimTime = currentTime;
+
+            /* use the measured time delta, get battery voltage from WPILib */
+            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+        });
+        m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    public void driveApplySpeeds(double xVelocity, double yVelocity, double angularVelocity) {
-        this.setControl(
-            new SwerveRequest.FieldCentric()
-                //.withDeadband(DEADBAND)
-                .withVelocityX(xVelocity)
-                .withVelocityY(yVelocity)
-                .withRotationalRate(angularVelocity)
-                .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
-                .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo)
-        );
+    /**
+     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * while still accounting for measurement noise.
+     *
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     */
+    @Override
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
+    }
+
+    /**
+     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * while still accounting for measurement noise.
+     * <p>
+     * Note that the vision measurement standard deviations passed into this method
+     * will continue to apply to future measurements until a subsequent call to
+     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
+     *
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
+     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
+     */
+    @Override
+    public void addVisionMeasurement(
+        Pose2d visionRobotPoseMeters,
+        double timestampSeconds,
+        Matrix<N3, N1> visionMeasurementStdDevs
+    ) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 }
