@@ -11,13 +11,25 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 9.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OUTPOST_PrepareLeftClimberApproachPtI"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "OUTPOST_PrepareRightClimberApproach"
+                  "pathName": "OUTPOST_PrepareLeftClimberApproachPtII"
                 }
               },
               {
@@ -27,12 +39,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ApproachClimberRight"
           }
         },
         {

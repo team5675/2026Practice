@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OUTPOSTLEGTCLIMB"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.11859600341796
+    "rotation": -1.5481576989779582
   },
   "reversed": false,
   "folder": "RIGHT",

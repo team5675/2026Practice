@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.9791410256410265,
+        "y": 4.697807692307692
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4213143385225047,
+        "y": 5.2567338761929285
+      },
+      "isLocked": false,
+      "linkedName": "OUTPOSTLEGTCLIMB"
+    },
+    {
+      "anchor": {
+        "x": 1.2465641025641045,
+        "y": 5.430384615390429
+      },
+      "prevControl": {
+        "x": 1.8774576892433152,
+        "y": 4.791698660453536
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LCLIMBPOSITON"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -0.4021259377166966
+  },
+  "reversed": false,
+  "folder": "RIGHT",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -1.5481576989779582
+  },
+  "useDefaultConstraints": true
+}
