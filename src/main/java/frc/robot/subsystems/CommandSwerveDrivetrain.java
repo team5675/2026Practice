@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -251,14 +253,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+         double robotYaw = this.getPigeon2().getYaw().getValueAsDouble();
+        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
+            robotYaw += 180.0;
+            if (robotYaw >= 360){
+                robotYaw -= 360;
+            }
+            if (robotYaw <= 0){
+                robotYaw += 360;
+            }
+        }
 
         LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
+
+        LimelightHelpers.SetRobotOrientation(LimelightConstants.limelightName, robotYaw,
+          0, 0, 0, 0, 0);
+
 
         LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.limelightName);
         
         if(poseEstimate != null && poseEstimate.tagCount > 0){
 
-            addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+            addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(0.7,0.7,0.7));
         }
 
         m_field.setRobotPose(getState().Pose);
@@ -312,5 +328,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Matrix<N3, N1> visionMeasurementStdDevs
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+    }
+
+    void determineLL(){
+        String[] limelightArray = {LimelightConstants.limelightName, LimelightConstants.limelightName, LimelightConstants.limelightName, LimelightConstants.limelightName};
+        String biggestTagName;
+        double biggestTagArea = 0;
+        for (var i = 0; i < limelightArray.length; i++){
+            String limelightName = limelightArray[i];
+
+            double tagArea = LimelightHelpers.getTA(limelightName);
+
+            if(tagArea > biggestTagArea){
+                biggestTagName = limelightName;
+                biggestTagArea = tagArea;
+            }
+
+        }
+        //return biggestTagName
+
     }
 }
