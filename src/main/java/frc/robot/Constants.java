@@ -92,7 +92,7 @@ public class Constants {
         
     }
     public class ClimberConstants {
-        public static final int climberMotorId = 0;
+        public static final int climberMotorId = 20;
         
     }
     public class IntakeConstants {

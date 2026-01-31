@@ -10,9 +10,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Indexer.Indexer;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
@@ -34,6 +34,9 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("climberTicks", ticksEncoder.getPosition());
+    SmartDashboard.putNumber("climberCurrent", climberMotor.getOutputCurrent());
   }
   public static Climber instance;
   public static Climber getInstance() {

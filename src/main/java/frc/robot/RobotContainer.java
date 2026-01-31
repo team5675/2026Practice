@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Climber.ClimbCommand;
+import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Climber.LowerClimbCommand;
 import frc.robot.subsystems.Climber.RaiseClimbCommand;
 //import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Shooter.Shooter;
@@ -52,7 +54,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 5% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -126,6 +128,30 @@ public class RobotContainer {
 
         driverController.rightTrigger().whileTrue(Commands.run(() -> Shooter.getInstance().startShooting()));
         driverController.rightTrigger().onFalse(Commands.run(() -> Shooter.getInstance().stopShooting()));
+        // driverController.povUp().onTrue(new RaiseClimbCommand());
+        // driverController.povDown().onTrue(new LowerClimbCommand());
+        // driverController.povRight().onTrue(new ClimbCommand());
+        // driverController.povUp().whileTrue(Commands.runOnce(()->Climber.getInstance().climberMotor.set(1)));
+        // //driverController.povUp().onFalse(Commands.run(()->Climber.getInstance().climberMotor.set(0)));
+        // driverController.povDown()
+        // .whileTrue(Commands.runOnce(()->Climber.getInstance().climberMotor.set(-1)))
+        // .and(driverController.povUp())
+        // .onFalse(Commands.runOnce(()->Climber.getInstance().climberMotor.set(0)));
+
+        // pov UP motor moves up
+        // let go and stop
+
+        // pov DOWN motor goes down
+        // let go and stop
+
+        //lower
+        driverController.povDown().onTrue(Commands.runOnce(() -> {Climber.getInstance().climberMotor.set(1);}));
+        //raise
+        driverController.povUp().onTrue(Commands.runOnce(() -> {Climber.getInstance().climberMotor.set(-1);}));
+
+        driverController.x().onTrue(Commands.runOnce(() -> {Climber.getInstance().climberMotor.set(0);}));
+
+
     }
 
 

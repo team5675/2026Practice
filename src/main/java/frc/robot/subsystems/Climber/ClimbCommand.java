@@ -4,19 +4,27 @@
 
 package frc.robot.subsystems.Climber;
 
+import static edu.wpi.first.units.Units.Seconds;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ClimbCommand extends Command {
+  public boolean isClimbFinished;
   /** Creates a new ClimberUp. */
   public ClimbCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
+    isClimbFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      Climber.getInstance().climberMotor.set(-1);
+      Climber.getInstance().climberMotor.set(-0.4);
+      Timer.delay(3);
+      isClimbFinished = true;
   }
   
 
@@ -31,6 +39,7 @@ public class ClimbCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    
+    return isClimbFinished;
   }
 }

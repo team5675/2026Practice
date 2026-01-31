@@ -38,7 +38,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void target() {
-    //rotate robot and hood into position
     
   }
 
