@@ -3,9 +3,16 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "CB"
+    "CENTER",
+    "LEFT",
+    "LEFTCLIMBER",
+    "RIGHT",
+    "RIGHTCLIMBER"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "RIGHTCLIMBERS",
+    "LEFTCLIMBERS"
+  ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,

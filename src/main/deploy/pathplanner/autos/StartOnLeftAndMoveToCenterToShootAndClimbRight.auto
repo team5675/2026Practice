@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LEFT_PrepareClimberApproach"
+                  "pathName": "PrepareRightClimberApproach"
                 }
               },
               {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LEFT_ApproachClimber"
+            "pathName": "ApproachClimberRight"
           }
         },
         {
@@ -51,6 +51,6 @@
     }
   },
   "resetOdom": false,
-  "folder": null,
+  "folder": "RIGHTCLIMBERS",
   "choreoAuto": false
 }

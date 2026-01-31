@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.534744958481614,
-        "y": 2.049928825622776
+        "x": 0.556,
+        "y": 0.665
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4067173136792464,
-        "y": 2.2646587074891773
+        "x": 0.9326025641025656,
+        "y": 1.2558589743589743
       },
       "isLocked": false,
-      "linkedName": "CPCA-AC"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.072,
-        "y": 2.826
+        "x": 1.9791410256410265,
+        "y": 4.697807692307692
       },
       "prevControl": {
-        "x": 1.2000605405686833,
-        "y": 2.6112897348768422
+        "x": 1.7000641025641035,
+        "y": 4.197794871794871
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ClimbPosition"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.11859600341796
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -179.0227661075931
   },
   "useDefaultConstraints": false
 }

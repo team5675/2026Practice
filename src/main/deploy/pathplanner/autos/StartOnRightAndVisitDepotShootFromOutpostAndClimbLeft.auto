@@ -1,0 +1,50 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OUTPOST_BackToOutpostToShoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OUTPOST_PrepareRightClimberApproach"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RaiseClimb"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ApproachClimberRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": "LEFTCLIMBERS",
+  "choreoAuto": false
+}

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.235115384615385,
-        "y": 1.069807692307693
+        "x": 0.556,
+        "y": 0.665
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.235115384615385,
-        "y": 1.069807692307693
+        "x": 1.1884230769230784,
+        "y": 1.6744743589743596
       },
       "isLocked": false,
-      "linkedName": "TOOMANYTESTS"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.235115384615385,
-        "y": 6.662974358974359
+        "x": 1.2233076923076935,
+        "y": 1.7442435897435904
       },
       "prevControl": {
-        "x": 7.235115384615385,
-        "y": 6.662974358974359
+        "x": 0.1562162215690337,
+        "y": 0.2230843474768971
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CPCA-AC"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 167.28886743447052
+    "rotation": 179.11859600341796
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 128.65980825409017
+    "rotation": -178.85887670718205
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

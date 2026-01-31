@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.061,
-        "y": 2.48
+        "x": 1.2465641025641045,
+        "y": 5.430384615390429
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.085540242163468,
-        "y": 3.0840413481885247
+        "x": 1.3406492500401364,
+        "y": 5.687074457654707
       },
       "isLocked": false,
-      "linkedName": "OPCA-AC"
+      "linkedName": "LCLIMBPOSITON"
     },
     {
       "anchor": {
-        "x": 1.072,
-        "y": 2.826
+        "x": 1.1070256410256425,
+        "y": 4.662923076923078
       },
       "prevControl": {
-        "x": 1.0562894496173838,
-        "y": 2.5425446016682582
+        "x": 1.055216478692245,
+        "y": 4.418350366470109
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ClimbPosition"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LEFTCLIMBER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -0.4021259377166966
   },
   "useDefaultConstraints": false
 }
