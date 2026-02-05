@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -10,6 +11,11 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -200,6 +206,38 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     
     public void setupDefaults() {
         m_field = new Field2d();
+
+        this.getPigeon2().reset();
+
+        configureAutoBuilder();
+    }
+
+private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds(); 
+
+    public void configureAutoBuilder(){
+        try {
+            RobotConfig config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> getState().Pose,
+                this::resetPose,
+                () -> getState().Speeds,
+                (speeds, feedforwards) -> setControl(
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController( 
+                    new PIDConstants(4,0,0),
+                    new PIDConstants(3,0,0)
+                ),
+                config,
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                this
+            );
+        }
+        catch(Exception e) {
+             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+        }
     }
 
     /**
@@ -264,31 +302,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             }
         }
 
-        LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
+        // LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
 
-        LimelightHelpers.SetRobotOrientation(LimelightConstants.limelightName, robotYaw,
-          0, 0, 0, 0, 0);
+        // LimelightHelpers.SetRobotOrientation(LimelightConstants.limelightName, robotYaw,
+        //   0, 0, 0, 0, 0);
 
-
-        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.limelightName);
-        
-        if(poseEstimate != null && poseEstimate.tagCount > 0){
-
-            addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(0.7,0.7,0.7));
+          updatePoseWithLimelight(robotYaw);
+          
+          m_field.setRobotPose(getState().Pose);
+          SmartDashboard.putData("Field",m_field);
         }
-
-        m_field.setRobotPose(getState().Pose);
-        SmartDashboard.putData("Field",m_field);
-    }
-
-    private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - m_lastSimTime;
-            m_lastSimTime = currentTime;
+        
+        private void startSimThread() {
+            m_lastSimTime = Utils.getCurrentTimeSeconds();
+            
+            /* Run simulation at a faster rate so PID gains behave more reasonably */
+            m_simNotifier = new Notifier(() -> {
+                final double currentTime = Utils.getCurrentTimeSeconds();
+                double deltaTime = currentTime - m_lastSimTime;
+                m_lastSimTime = currentTime;
 
             /* use the measured time delta, get battery voltage from WPILib */
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
@@ -307,7 +339,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
-
+    
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
      * while still accounting for measurement noise.
@@ -330,22 +362,53 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
-    void determineLL(){
-        String[] limelightArray = {LimelightConstants.limelightName, LimelightConstants.limelightName, LimelightConstants.limelightName, LimelightConstants.limelightName};
-        String biggestTagName;
-        double biggestTagArea = 0;
-        for (var i = 0; i < limelightArray.length; i++){
-            String limelightName = limelightArray[i];
+    void updatePoseWithLimelight(double robotYaw){
+        for (String limelight : LimelightConstants.limelightArray) {
+            LimelightHelpers.setPipelineIndex(limelight, 0);
 
-            double tagArea = LimelightHelpers.getTA(limelightName);
+           // LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);
 
-            if(tagArea > biggestTagArea){
-                biggestTagName = limelightName;
-                biggestTagArea = tagArea;
-            }
+            LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelight);
+            
+            //Field2d fieldpreview = new Field2d();
+            double kOmega = Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
 
+
+            if (kOmega > 720.0) continue;
+
+            if(poseEstimate == null) continue;
+            if(poseEstimate.tagCount < 1) continue;
+             /*&& poseEstimate.avgTagDist < 4.0*/
+                // fieldpreview.setRobotPose(poseEstimate.pose);
+                // SmartDashboard.putData(limelight + "-fieldpreview", fieldpreview);
+               double x = poseEstimate.pose.getX();
+               double y = poseEstimate.pose.getY();
+               
+                if (y < 0.5) continue;
+                if (x < 0.5 || x > 17.5) continue;
+                
+                double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
+
+                addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(stdDev,stdDev,9999999)); //n3 is rotation and we dont want vision to adjust
+            
+            // loop ends
         }
-        //return biggestTagName
+    }
+
+    double calcStandardDev(int tagCount, double avgDist){
+
+        double stdDev = 0.5;
+
+        stdDev += avgDist * 0.15;
+
+        if(tagCount >= 2){
+            stdDev *= 0.5;
+        }
+        if (tagCount >= 3){
+            stdDev *= 0.8;
+        }
+
+        return Math.max(0.1, Math.min(3.0,stdDev));
 
     }
 }
