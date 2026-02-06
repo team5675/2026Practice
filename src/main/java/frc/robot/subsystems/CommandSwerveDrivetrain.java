@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -11,7 +9,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -34,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -362,41 +358,66 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
+    public String[] limelightNames = { LimelightConstants.llHalio, LimelightConstants.llWide, LimelightConstants.llCoral };
+    //public Map<String, Field2d> limelightPoses = new HashMap<>();
+    public Field2d halioField = new Field2d();
+    public Field2d wideField = new Field2d();
+    public Field2d coralField = new Field2d();
+
+    /**
+     * function updatePoseWithLimelight
+     * @param robotYaw
+     */
     void updatePoseWithLimelight(double robotYaw){
-        for (String limelight : LimelightConstants.limelightArray) {
+        for (String limelight : this.limelightNames) {
             LimelightHelpers.setPipelineIndex(limelight, 0);
 
-           // LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);
+           // LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);`
 
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelight);
             
             //Field2d fieldpreview = new Field2d();
             double kOmega = Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
 
-
             if (kOmega > 720.0) continue;
 
             if(poseEstimate == null) continue;
             if(poseEstimate.tagCount < 1) continue;
-             /*&& poseEstimate.avgTagDist < 4.0*/
-                // fieldpreview.setRobotPose(poseEstimate.pose);
-                // SmartDashboard.putData(limelight + "-fieldpreview", fieldpreview);
-               double x = poseEstimate.pose.getX();
-               double y = poseEstimate.pose.getY();
-               
-                if (y < 0.5) continue;
-                if (x < 0.5 || x > 17.5) continue;
-                
-                double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
 
-                addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(stdDev,stdDev,9999999)); //n3 is rotation and we dont want vision to adjust
+             /*&& poseEstimate.avgTagDist < 4.0*/
+
+            double x = poseEstimate.pose.getX();
+            double y = poseEstimate.pose.getY();
+               
+            if (y < 0.5) continue;
+            if (x < 0.5 || x > 17.5) continue;
+                
+            double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
+
+            addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(stdDev,stdDev,9999999)); //n3 is rotation and we dont want vision to adjust
             
+            // logging
+            Field2d field;
+
+            if (limelight == LimelightConstants.llHalio) {
+                field = halioField;
+            } else if (limelight == LimelightConstants.llWide) {
+                field = wideField;
+            } else if (limelight == LimelightConstants.llCoral) {
+                field = coralField;
+            } else continue;
+                
+            if (field == null) continue;
+
+            field.setRobotPose(poseEstimate.pose);
+
+            SmartDashboard.putData(limelight + "-pose_estimate", field);
+
             // loop ends
         }
     }
 
     double calcStandardDev(int tagCount, double avgDist){
-
         double stdDev = 0.5;
 
         stdDev += avgDist * 0.15;

@@ -11,7 +11,10 @@ public class Constants {
         public static String limelightName = "limelight-hailo";
         public static double kTolerance = 0.2;
         public static double minStrafe = 0.3;
-        public static String[] limelightArray = {"limelight-hailo", "limelight-wide", "limelight-coral"};
+
+        public static String llHalio = "limelight-hailo";
+        public static String llWide = "limelight-wide";
+        public static String llCoral = "limelight-coral";
     }
     
     public class PathplannerConstants {
