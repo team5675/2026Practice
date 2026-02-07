@@ -408,7 +408,7 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
         for (String limelight : this.limelightNames) {
             LimelightHelpers.setPipelineIndex(limelight, 0);
 
-            //LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);
 
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelight);
             

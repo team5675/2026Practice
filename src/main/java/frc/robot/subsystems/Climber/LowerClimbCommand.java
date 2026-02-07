@@ -12,7 +12,7 @@ public class LowerClimbCommand extends Command {
   public LowerClimbCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
-int level = 0;
+  int level = 0;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
