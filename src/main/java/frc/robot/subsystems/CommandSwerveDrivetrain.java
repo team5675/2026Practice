@@ -199,35 +199,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         setupDefaults();
     }
 
-    public Field2d m_field;
-    private SwerveDrivePoseEstimator m_odometryOnlyEstimator;
-    
-    public void setupDefaults() {
-        m_field = new Field2d();
-
-        m_odometryOnlyEstimator = new SwerveDrivePoseEstimator(
-            this.getKinematics(),
-            this.getPigeon2().getRotation2d(),
-            this.getState().ModulePositions,
-            this.getState().Pose   // start at same place as main estimator
-        );
-
-        //this.getPigeon2().reset();
-
-        //sets all 4 camera poses
-        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llHalio, 0.3175, 0, 0.4318, 0, 25, 0);
-        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llWide, 0.2159, -0.127, 0.4445, 0, 52, 0);
-        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llCoral, 0.2667, -0.127, 0.3302, 0, -10, 0);
-        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llBack, 0.1143, -0.127, 0.3175, 0, 15, 170);
-
-        for (String limelight : limelightNames) {
-            LimelightHelpers.setPipelineIndex(limelight, 0);
-        }
-
-        configureAutoBuilder();
-    }
-
-private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds(); 
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds(); 
 
     public void configureAutoBuilder(){
         try {
@@ -285,6 +257,70 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
+    }
+
+        /**
+     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * while still accounting for measurement noise.
+     *
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     */
+    @Override
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
+    }
+    
+    /**
+     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * while still accounting for measurement noise.
+     * <p>
+     * Note that the vision measurement standard deviations passed into this method
+     * will continue to apply to future measurements until a subsequent call to
+     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
+     *
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
+     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
+     */
+    @Override
+    public void addVisionMeasurement(
+        Pose2d visionRobotPoseMeters,
+        double timestampSeconds,
+        Matrix<N3, N1> visionMeasurementStdDevs
+    ) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+    }
+
+
+    public Field2d m_field;
+    private SwerveDrivePoseEstimator m_odometryOnlyEstimator;
+    public String[] limelightNames = { LimelightConstants.llHalio, /*LimelightConstants.llWide, LimelightConstants.llCoral, LimelightConstants.llBack*/ };
+    
+    public void setupDefaults() {
+        m_field = new Field2d();
+
+        m_odometryOnlyEstimator = new SwerveDrivePoseEstimator(
+            this.getKinematics(),
+            this.getPigeon2().getRotation2d(),
+            this.getState().ModulePositions,
+            this.getState().Pose   // start at same place as main estimator
+        );
+
+        //this.getPigeon2().reset();
+
+        //sets all 4 camera poses
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llHalio, 0.3175, 0, 0.4318, 0, 25, 0);
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llWide, 0.2159, -0.127, 0.4445, 0, 52, 0);
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llCoral, 0.2667, -0.127, 0.3302, 0, -10, 0);
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llBack, 0.1143, -0.127, 0.3175, 0, 15, 170);
+
+        for (String limelight : limelightNames) {
+            LimelightHelpers.setPipelineIndex(limelight, 0);
+        }
+
+        configureAutoBuilder();
     }
 
     @Override
@@ -348,41 +384,6 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     */
-    @Override
-    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
-    }
-    
-    /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     * <p>
-     * Note that the vision measurement standard deviations passed into this method
-     * will continue to apply to future measurements until a subsequent call to
-     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
-     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
-     */
-    @Override
-    public void addVisionMeasurement(
-        Pose2d visionRobotPoseMeters,
-        double timestampSeconds,
-        Matrix<N3, N1> visionMeasurementStdDevs
-    ) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
-    }
-
-    public String[] limelightNames = { LimelightConstants.llHalio, /*LimelightConstants.llWide, LimelightConstants.llCoral, LimelightConstants.llBack*/ };
     
     /**
      * function updatePoseWithLimelight
