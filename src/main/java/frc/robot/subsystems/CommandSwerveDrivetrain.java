@@ -296,7 +296,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Field2d m_field;
     private SwerveDrivePoseEstimator m_odometryOnlyEstimator;
-    public String[] limelightNames = { LimelightConstants.llHalio, /*LimelightConstants.llWide, LimelightConstants.llCoral, LimelightConstants.llBack*/ };
+    public String[] limelightNames = { LimelightConstants.llHalio, /*LimelightConstants.llWide, LimelightConstants.llCoral,*/ LimelightConstants.llBack };
     
     public void setupDefaults() {
         m_field = new Field2d();
@@ -342,17 +342,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        double robotYaw = this.getPigeon2().getYaw().getValueAsDouble();
-        // double robotYaw = this.getState().Pose.getRotation().getDegrees();
-        // if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
-        //     robotYaw += 180.0;
-        //     if (robotYaw >= 360){
-        //         robotYaw -= 360;
-        //     }
-        //     if (robotYaw <= 0){
-        //         robotYaw += 360;
-        //     }
-        // }
+        //double robotYaw = this.getPigeon2().getYaw().getValueAsDouble();
+        double robotYaw = this.getState().Pose.getRotation().getDegrees();
+        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
+            robotYaw += 180.0;
+        }
 
         // LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
 
@@ -436,7 +430,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             // if (y < 0.5) continue;
             // if (x < 0.5 || x > 17.5) continue;
                 
-            // double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
 
             if (poseEstimate != null && poseEstimate.tagCount > 0) {
                 m_field.getObject(limelight).setPose(poseEstimate.pose);
@@ -446,7 +439,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
                 double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
                 
-                addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(0.7,0.7,9999999)); //n3 is rotation and we dont want vision to adjust
+                addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(stdDev,stdDev,9999999)); //n3 is rotation and we dont want vision to adjust
             } else {
                 // No tags: park marker off-field
                 m_field.getObject(limelight).setPose(new Pose2d(-5, -5, new Rotation2d()));
