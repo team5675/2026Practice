@@ -296,7 +296,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Field2d m_field;
     private SwerveDrivePoseEstimator m_odometryOnlyEstimator;
-    public String[] limelightNames = { LimelightConstants.llHalio, /*LimelightConstants.llWide, LimelightConstants.llCoral,*/ LimelightConstants.llBack };
+    public String[] limelightNames = { LimelightConstants.llHalio, LimelightConstants.llWide, LimelightConstants.llCoral, LimelightConstants.llBack };
     
     public void setupDefaults() {
         m_field = new Field2d();
@@ -339,23 +339,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         ? kRedAlliancePerspectiveRotation
                         : kBlueAlliancePerspectiveRotation
                 );
+
+                if(!!m_hasAppliedOperatorPerspective){
+                    Rotation2d heading = (allianceColor == Alliance.Red) ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+                    Pose2d pose = this.getState().Pose;
+                    resetPose(new Pose2d(pose.getTranslation(), heading)); //sets the pose
+                }
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        //double robotYaw = this.getPigeon2().getYaw().getValueAsDouble();
         double robotYaw = this.getState().Pose.getRotation().getDegrees();
-        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
-            robotYaw += 180.0;
-        }
-
-        // LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
-
-        // LimelightHelpers.SetRobotOrientation(LimelightConstants.limelightName, robotYaw,
-        //   0, 0, 0, 0, 0);
 
           updatePoseWithLimelight(robotYaw);
           
-        //   m_field.setRobotPose(getState().Pose);
+        m_field.setRobotPose(getState().Pose);
 
           SmartDashboard.putData("Field",m_field);
           SmartDashboard.putNumber("Pigeon2 2d", this.getPigeon2().getRotation2d().getDegrees());
@@ -410,7 +407,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             //Field2d fieldpreview = new Field2d();
             double kOmega = Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
 
-            if (kOmega > Math.PI*4) continue;
+            if (kOmega > Math.PI) continue;
 
             // if(poseEstimate == null) {
             //     System.out.println(limelight + " returned null estimate!");
