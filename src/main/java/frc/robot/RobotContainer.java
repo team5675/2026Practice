@@ -87,7 +87,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue) {
+        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
 
              drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
