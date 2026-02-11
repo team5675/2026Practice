@@ -31,20 +31,8 @@
                 "data": {
                   "pathName": "OUTPOST_PrepareLeftClimberApproachPtII"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "RaiseClimb"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climber"
           }
         }
       ]
