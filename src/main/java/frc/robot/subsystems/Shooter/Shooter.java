@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.Shooter;
 
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -19,44 +23,31 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.MathUtil;
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
-  public SparkMax flywheelMotor;
-  public SparkMax hoodMotor;
-  public SparkMax providerMotor;
+  public TalonFX flywheelMotor;
+  public TalonFX followerMotor;
+  public TalonFX hoodMotor;
+  public TalonFX providerMotor;
   public boolean isFlywheelActive = false;
   public boolean isProviderActive = false;
   public double distanceToHub;
   public Pose2d hubPose;
-  
-  /* public static double getTurnSpeedToTarget(Pose2d robotPose, Translation2d targetPos, double kP) {   
-     // Compute direction vector from robot to target   
-      Translation2d delta = targetPos.minus(robotPose.getTranslation());       
-       // Desired heading (angle of the direction vector)   
-        Rotation2d desiredHeading = delta.getAngle();     
-           // Angular error (robot heading vs. desired), normalized to [-180, 180] degrees  
-        double angleError = desiredHeading.minus(robotPose.getRotation()).getDegrees();    
-        angleError = MathUtil.angleModulus(angleError);  
-        // Ensures [-180, 180]       
-         // Proportional control output, clamped to [-1, 1]    
-        return MathUtil.clamp(angleError * kP, -1.0, 1.0);}*/
+  public Follower follower;
         
   public Shooter() {
-    flywheelMotor = new SparkMax(Constants.ShooterConstants.flyWheelMotorId, MotorType.kBrushless);
-    hoodMotor = new SparkMax(Constants.ShooterConstants.hoodMotorId, MotorType.kBrushless);
-    providerMotor = new SparkMax(Constants.ShooterConstants.providerMotorId, MotorType.kBrushless);
-  }
+    flywheelMotor = new TalonFX(Constants.ShooterConstants.flyWheelMotorId, "Default Name");
+    followerMotor = new TalonFX(Constants.ShooterConstants.followerMotorId, "Default Name");
+    hoodMotor = new TalonFX(Constants.ShooterConstants.hoodMotorId, "Default Name");
+    providerMotor = new TalonFX(Constants.ShooterConstants.providerMotorId, "Default Name");
 
-  /* 
-     change controls for shooter later one for targeting, 
-     one for activate/deactivate and one for shooting
-  */ 
+    follower = new Follower(flywheelMotor.getDeviceID(),  MotorAlignmentValue.Aligned);
+    followerMotor.setControl(follower);
+  }
 
   public void activateShooter() {
     //activate shooter at the start of the match
     if (isFlywheelActive = false) {
-      flywheelMotor.set(1);
+      flywheelMotor.set(0.2);
       isFlywheelActive = true;
-      //change to a non-lethal speed
     }
   }
 
@@ -79,27 +70,8 @@ public class Shooter extends SubsystemBase {
     return a * (distance * distance * distance) + b * (distance * distance) + c * distance + d;
   }
 
-  // the x value of the red hub is 468.565
-  // the y value of the  R  E   DD D D D D      hub is 205.84
-  // distance formula and stuff
-
-  
-
-    public void target(CommandSwerveDrivetrain drivetrain) {
-
-      hubPose = new Pose2d(4.625, 4.035, new Rotation2d(0));
-    Pose2d robotPose = drivetrain.getState().Pose;
-    //get distance
-    double distanceToHub = robotPose.getTranslation().getDistance(hubPose.getTranslation());
-    double theHood = hoodCalc(distanceToHub);
-    double targetRotationX = hubPose.getX() - robotPose.getX();
-    double targetRotationY = hubPose.getY() - robotPose.getY();
-    double targetRotationFinal = Math.atan(targetRotationY/targetRotationX);
-    
-  }
-
-  // the hub (4.625, 4.035, 0);
-  
+  // blue hub (4.625, 4.0346, 0);
+  // red hub (11.916, 4.0346, 0);
 
   public void startShooting() {
    if (isProviderActive = false) {
@@ -111,6 +83,11 @@ public class Shooter extends SubsystemBase {
   public void stopShooting() {
     providerMotor.set(0);
     isProviderActive = false;
+  }
+
+  public void setFlywheelRPM(double rpm){
+    VelocityVoltage rpmSpeed = new VelocityVoltage(rpm / 60.0);
+    //flywheelMotor.setControl(rpmSpeed);
   }
   
 
