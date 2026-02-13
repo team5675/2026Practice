@@ -14,7 +14,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -25,21 +27,20 @@ import edu.wpi.first.math.MathUtil;
 public class Shooter extends SubsystemBase {
   public TalonFX flywheelMotor;
   public TalonFX followerMotor;
-  public TalonFX hoodMotor;
+  public SparkMax hoodMotor;
   public TalonFX providerMotor;
   public boolean isFlywheelActive = false;
   public boolean isProviderActive = false;
   public double distanceToHub;
-  public Pose2d hubPose;
   public Follower follower;
         
   public Shooter() {
     flywheelMotor = new TalonFX(Constants.ShooterConstants.flyWheelMotorId, "Default Name");
     followerMotor = new TalonFX(Constants.ShooterConstants.followerMotorId, "Default Name");
-    hoodMotor = new TalonFX(Constants.ShooterConstants.hoodMotorId, "Default Name");
+    hoodMotor = new SparkMax(Constants.ShooterConstants.hoodMotorId, MotorType.kBrushless);
     providerMotor = new TalonFX(Constants.ShooterConstants.providerMotorId, "Default Name");
 
-    follower = new Follower(flywheelMotor.getDeviceID(),  MotorAlignmentValue.Aligned);
+    follower = new Follower(flywheelMotor.getDeviceID(),  MotorAlignmentValue.Opposed);
     followerMotor.setControl(follower);
   }
 
@@ -51,6 +52,41 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  public double rotateToHubSpeed(CommandSwerveDrivetrain drivetrain, double MaxAngularRate){
+    try{
+    Pose2d hubPose = new Pose2d(11.916, 4.035, new Rotation2d(0));
+    Pose2d robotPose = drivetrain.getState().Pose;
+    System.out.println("Robot Pose " + robotPose);
+    //get distance
+    //double distanceToHub = robotPose.getTranslation().getDistance(hubPose.getTranslation());
+    //double distanc
+
+    // double ToHood = hoodCalc(distanceToHub);
+    double dx = robotPose.getX() - hubPose.getX();
+    SmartDashboard.putNumber("Target X ", dx);
+    double dy = hubPose.getY() - robotPose.getY();
+    SmartDashboard.putNumber("Target Y ", dy);
+    double neededTheta = Math.atan2(dx, dy); //in radians
+    SmartDashboard.putNumber("Target Rotation ", neededTheta);
+
+    double rotDiff = robotPose.getRotation().getRadians() - neededTheta;
+    SmartDashboard.putNumber("Rotation Difference", rotDiff);
+
+    if(Math.abs(rotDiff) < 0.03) rotDiff = 0;
+
+    double scalar = 0.1;
+    
+    double speed = rotDiff * scalar * MaxAngularRate;
+    SmartDashboard.putNumber("Angular Velocity", speed);
+
+    return speed;
+    
+  
+    }catch(Exception e) {
+      e.printStackTrace();
+      return 0.0;
+  }
+  }
   public double hoodCalc(double distance) {
     distance = distanceToHub;
     double a = 1.0;
