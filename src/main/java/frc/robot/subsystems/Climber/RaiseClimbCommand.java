@@ -13,7 +13,7 @@ public class RaiseClimbCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  int level = 50;
+  int level = -2200;
 
   // Called when the command is initially scheduled.
   @Override
@@ -32,6 +32,6 @@ public class RaiseClimbCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(level - Climber.getInstance().ticksEncoder.getPosition()) < 1;
+    return Math.abs(level - Climber.getInstance().ticksEncoder.getPosition()) < 50;
   }
 }

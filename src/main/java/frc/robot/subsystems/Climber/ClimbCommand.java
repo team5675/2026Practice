@@ -22,9 +22,7 @@ public class ClimbCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      Climber.getInstance().climberMotor.set(-0.4);
-      Timer.delay(3);
-      isClimbFinished = true;
+      Climber.getInstance().climberMotor.set(0.5);
   }
   
 
@@ -34,12 +32,13 @@ public class ClimbCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    Climber.getInstance().climberMotor.set(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    return isClimbFinished;
+    return Math.abs(0 - Climber.getInstance().ticksEncoder.getPosition()) < 500;
   }
 }

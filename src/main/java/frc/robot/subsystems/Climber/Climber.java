@@ -41,6 +41,10 @@ public class Climber extends SubsystemBase {
 
     lowLimitBool = lowLimitSwitch.get();
 
+    if (!lowLimitBool) climberMotor.set(0);
+    if (ticksEncoder.getPosition() < -2300) climberMotor.set(0);
+    if (ticksEncoder.getPosition() > 0) climberMotor.set(0);
+
     SmartDashboard.putNumber("climberTicks", ticksEncoder.getPosition());
     SmartDashboard.putNumber("climberCurrent", climberMotor.getOutputCurrent());
     SmartDashboard.putBoolean("Low Limit Switch", lowLimitBool);

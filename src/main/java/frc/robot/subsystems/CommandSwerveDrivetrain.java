@@ -308,8 +308,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.getState().Pose   // start at same place as main estimator
         );
 
-        //this.getPigeon2().reset();
-
         //sets all 4 camera poses
         LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llHalio, 0.3175, 0, 0.4318, 0, 25, 0);
         LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llWide, 0.2159, -0.127, 0.4445, 0, 52, 0);
@@ -340,7 +338,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         : kBlueAlliancePerspectiveRotation
                 );
 
-                if(!!m_hasAppliedOperatorPerspective){
+                if(!m_hasAppliedOperatorPerspective){
                     Rotation2d heading = (allianceColor == Alliance.Red) ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
                     Pose2d pose = this.getState().Pose;
                     resetPose(new Pose2d(pose.getTranslation(), heading)); //sets the pose
@@ -350,7 +348,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         double robotYaw = this.getState().Pose.getRotation().getDegrees();
 
-          updatePoseWithLimelight(robotYaw);
+        updatePoseWithLimelight(robotYaw);
           
         m_field.setRobotPose(getState().Pose);
 
