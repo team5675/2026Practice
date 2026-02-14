@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.665,
-        "y": 4.094
+        "x": 3.5,
+        "y": 3.675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9675128205128218,
-        "y": 3.8373205128205132
+        "x": 3.2638963435219592,
+        "y": 5.640830257516832
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2233076923076935,
-        "y": 1.7442435897435904
+        "x": 1.2465641025641045,
+        "y": 5.430384615390429
       },
       "prevControl": {
-        "x": 1.6419230769230784,
-        "y": 1.918666666666668
+        "x": 1.8094281262891148,
+        "y": 4.8065217469138855
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CPCA-AC"
+      "linkedName": "LCLIMBPOSITON"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.11859600341796
+    "rotation": -0.4021259377166966
   },
   "reversed": false,
-  "folder": "RIGHTCLIMBER",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -179.9753814589687
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

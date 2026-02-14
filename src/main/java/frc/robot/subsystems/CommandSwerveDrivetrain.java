@@ -16,6 +16,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -198,17 +199,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         setupDefaults();
     }
 
-    public Field2d m_field;
-    
-    public void setupDefaults() {
-        m_field = new Field2d();
-
-        this.getPigeon2().reset();
-
-        configureAutoBuilder();
-    }
-
-private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds(); 
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds(); 
 
     public void configureAutoBuilder(){
         try {
@@ -268,63 +259,7 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    @Override
-    public void periodic() {
-        /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
-         */
-        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-            DriverStation.getAlliance().ifPresent(allianceColor -> {
-                setOperatorPerspectiveForward(
-                    allianceColor == Alliance.Red
-                        ? kRedAlliancePerspectiveRotation
-                        : kBlueAlliancePerspectiveRotation
-                );
-                m_hasAppliedOperatorPerspective = true;
-            });
-        }
-         double robotYaw = this.getPigeon2().getYaw().getValueAsDouble();
-        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
-            robotYaw += 180.0;
-            if (robotYaw >= 360){
-                robotYaw -= 360;
-            }
-            if (robotYaw <= 0){
-                robotYaw += 360;
-            }
-        }
-
-        // LimelightHelpers.setPipelineIndex(LimelightConstants.limelightName, 0);
-
-        // LimelightHelpers.SetRobotOrientation(LimelightConstants.limelightName, robotYaw,
-        //   0, 0, 0, 0, 0);
-
-          updatePoseWithLimelight(robotYaw);
-          
-          m_field.setRobotPose(getState().Pose);
-          SmartDashboard.putData("Field",m_field);
-        }
-        
-        private void startSimThread() {
-            m_lastSimTime = Utils.getCurrentTimeSeconds();
-            
-            /* Run simulation at a faster rate so PID gains behave more reasonably */
-            m_simNotifier = new Notifier(() -> {
-                final double currentTime = Utils.getCurrentTimeSeconds();
-                double deltaTime = currentTime - m_lastSimTime;
-                m_lastSimTime = currentTime;
-
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
-
-    /**
+        /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
      * while still accounting for measurement noise.
      *
@@ -358,60 +293,153 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
-    public String[] limelightNames = { LimelightConstants.llHalio, LimelightConstants.llWide, LimelightConstants.llCoral };
-    //public Map<String, Field2d> limelightPoses = new HashMap<>();
-    public Field2d halioField = new Field2d();
-    public Field2d wideField = new Field2d();
-    public Field2d coralField = new Field2d();
 
+    public Field2d m_field;
+    private SwerveDrivePoseEstimator m_odometryOnlyEstimator;
+    public String[] limelightNames = { LimelightConstants.llHalio, LimelightConstants.llWide, LimelightConstants.llCoral, LimelightConstants.llBack };
+    
+    public void setupDefaults() {
+        m_field = new Field2d();
+
+        m_odometryOnlyEstimator = new SwerveDrivePoseEstimator(
+            this.getKinematics(),
+            this.getPigeon2().getRotation2d(),
+            this.getState().ModulePositions,
+            this.getState().Pose   // start at same place as main estimator
+        );
+
+        //sets all 4 camera poses
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llHalio, 0.3175, 0, 0.4318, 0, 25, 0);
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llWide, 0.2159, -0.127, 0.4445, 0, 52, 0);
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llCoral, 0.2667, -0.127, 0.3302, 0, -10, 0);
+        LimelightHelpers.setCameraPose_RobotSpace(LimelightConstants.llBack, 0.210, -0.207, 0.2975, 0, 12, 135);
+
+        for (String limelight : limelightNames) {
+            LimelightHelpers.setPipelineIndex(limelight, 0);
+        }
+
+        configureAutoBuilder();
+    }
+
+    @Override
+    public void periodic() {
+        /*
+         * Periodically try to apply the operator perspective.
+         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
+         * This allows us to correct the perspective in case the robot code restarts mid-match.
+         * Otherwise, only check and apply the operator perspective if the DS is disabled.
+         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+         */
+        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent(allianceColor -> {
+                setOperatorPerspectiveForward(
+                    allianceColor == Alliance.Red
+                        ? kRedAlliancePerspectiveRotation
+                        : kBlueAlliancePerspectiveRotation
+                );
+
+                if(!m_hasAppliedOperatorPerspective){
+                    Rotation2d heading = (allianceColor == Alliance.Red) ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+                    Pose2d pose = this.getState().Pose;
+                    resetPose(new Pose2d(pose.getTranslation(), heading)); //sets the pose
+                }
+                m_hasAppliedOperatorPerspective = true;
+            });
+        }
+        double robotYaw = this.getState().Pose.getRotation().getDegrees();
+
+        updatePoseWithLimelight(robotYaw);
+          
+        m_field.setRobotPose(getState().Pose);
+
+          SmartDashboard.putData("Field",m_field);
+          SmartDashboard.putNumber("Pigeon2 2d", this.getPigeon2().getRotation2d().getDegrees());
+        } // end periodic
+        
+
+        private void startSimThread() {
+            m_lastSimTime = Utils.getCurrentTimeSeconds();
+            
+            /* Run simulation at a faster rate so PID gains behave more reasonably */
+            m_simNotifier = new Notifier(() -> {
+                final double currentTime = Utils.getCurrentTimeSeconds();
+                double deltaTime = currentTime - m_lastSimTime;
+                m_lastSimTime = currentTime;
+
+            /* use the measured time delta, get battery voltage from WPILib */
+            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+        });
+
+        m_simNotifier.startPeriodic(kSimLoopPeriod);
+    }
+
+    
     /**
      * function updatePoseWithLimelight
      * @param robotYaw
      */
     void updatePoseWithLimelight(double robotYaw){
+        var pose = this.getState().Pose;
+
+        m_field.setRobotPose(pose);
+        m_odometryOnlyEstimator.update(
+            this.getPigeon2().getRotation2d(), // should we use pigeon?
+            this.getState().ModulePositions
+        );
+
+        m_field.getObject("OdometryOnly").setPose(m_odometryOnlyEstimator.getEstimatedPosition());
+
+        double pigeonYaw = this.getPigeon2().getYaw().getValueAsDouble();
+        m_field.getObject("PigeonHeading").setPose(new Pose2d(
+            pose.getX(), pose.getY(),
+            Rotation2d.fromDegrees(pigeonYaw)
+        ));
+
         for (String limelight : this.limelightNames) {
             LimelightHelpers.setPipelineIndex(limelight, 0);
 
-           // LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);`
+            LimelightHelpers.SetRobotOrientation(limelight, robotYaw, 0, 0, 0, 0, 0);
 
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelight);
             
             //Field2d fieldpreview = new Field2d();
             double kOmega = Math.abs(this.getState().Speeds.omegaRadiansPerSecond);
 
-            if (kOmega > 720.0) continue;
+            if (kOmega > Math.PI) continue;
 
-            if(poseEstimate == null) continue;
-            if(poseEstimate.tagCount < 1) continue;
+            // if(poseEstimate == null) {
+            //     System.out.println(limelight + " returned null estimate!");
+            //     continue;
+            // }
+            // if(poseEstimate.tagCount < 1)  {
+            //     System.out.println(limelight + " didnt see tags!");
+            //     continue;
+            // }
 
-             /*&& poseEstimate.avgTagDist < 4.0*/
+            //  /*&& poseEstimate.avgTagDist < 4.0*/
 
-            double x = poseEstimate.pose.getX();
-            double y = poseEstimate.pose.getY();
+            // double x = poseEstimate.pose.getX();
+
+            // double y = poseEstimate.pose.getY();
                
-            if (y < 0.5) continue;
-            if (x < 0.5 || x > 17.5) continue;
+            // if (y < 0.5) continue;
+            // if (x < 0.5 || x > 17.5) continue;
                 
-            double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
 
-            addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(stdDev,stdDev,9999999)); //n3 is rotation and we dont want vision to adjust
-            
-            // logging
-            Field2d field;
+            if (poseEstimate != null && poseEstimate.tagCount > 0) {
+                m_field.getObject(limelight).setPose(poseEstimate.pose);
+                SmartDashboard.putNumber(limelight + "/Tags", poseEstimate.tagCount);
+                SmartDashboard.putNumber(limelight + "/Dist", poseEstimate.avgTagDist);
+                SmartDashboard.putString(limelight + "/Status", "OK (" + poseEstimate.tagCount + " tags)");
 
-            if (limelight == LimelightConstants.llHalio) {
-                field = halioField;
-            } else if (limelight == LimelightConstants.llWide) {
-                field = wideField;
-            } else if (limelight == LimelightConstants.llCoral) {
-                field = coralField;
-            } else continue;
+                double stdDev = calcStandardDev(poseEstimate.tagCount, poseEstimate.avgTagDist);
                 
-            if (field == null) continue;
-
-            field.setRobotPose(poseEstimate.pose);
-
-            SmartDashboard.putData(limelight + "-pose_estimate", field);
+                addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,VecBuilder.fill(stdDev,stdDev,9999999)); //n3 is rotation and we dont want vision to adjust
+            } else {
+                // No tags: park marker off-field
+                m_field.getObject(limelight).setPose(new Pose2d(-5, -5, new Rotation2d()));
+                SmartDashboard.putString(limelight + "/Status", poseEstimate == null ? "DISCONNECTED" : "No tags");
+            }
 
             // loop ends
         }

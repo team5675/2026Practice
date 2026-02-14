@@ -14,6 +14,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -93,17 +95,38 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
+        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+
+             drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-                    // Removed negative to reverse rotation on map
             )
-        );
+        ); } else {
 
-        driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        ); }
+        // drivetrain.setDefaultCommand(
+        //     // Drivetrain will execute this command periodically
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+        //             .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        //             // Removed negative to reverse rotation on map
+        //     )
+        // );
+
+        //driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
         ));
@@ -132,13 +155,10 @@ public class RobotContainer {
         driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.leftBumper().onTrue(Commands.runOnce(() -> drivetrain.setOperatorPerspectiveForward(DriverStation.getAlliance().get().equals(Alliance.Red) ? Rotation2d.k180deg : Rotation2d.kZero)));
 
-        driverController.rightTrigger().whileTrue(Commands.run(() -> Shooter.getInstance().startShooting()));
-        driverController.rightTrigger().onFalse(Commands.run(() -> Shooter.getInstance().stopShooting()));
-        // driverController.povUp().onTrue(new RaiseClimbCommand());
-        // driverController.povDown().onTrue(new LowerClimbCommand());
-        // driverController.povRight().onTrue(new ClimbCommand());
+        //driverController.rightTrigger().whileTrue(Commands.run(() -> Shooter.getInstance().startShooting()));
+        //driverController.rightTrigger().onFalse(Commands.run(() -> Shooter.getInstance().stopShooting()));
         // driverController.povUp().whileTrue(Commands.runOnce(()->Climber.getInstance().climberMotor.set(1)));
         // //driverController.povUp().onFalse(Commands.run(()->Climber.getInstance().climberMotor.set(0)));
         // driverController.povDown()
@@ -159,6 +179,11 @@ public class RobotContainer {
 
         driverController.x().onTrue(Commands.runOnce(() -> {Climber.getInstance().climberMotor.set(0);}));
 
+        driverController.y().onTrue(Commands.runOnce(() -> {Climber.getInstance().ticksEncoder.setPosition(0);}));
+    
+        // driverController.rightTrigger().onTrue(new LowerClimbCommand());
+        // driverController.leftTrigger().onTrue(new RaiseClimbCommand());
+        // driverController.a().onTrue(new ClimbCommand());
 
     }
 

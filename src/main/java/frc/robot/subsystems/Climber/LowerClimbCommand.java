@@ -12,7 +12,7 @@ public class LowerClimbCommand extends Command {
   public LowerClimbCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
-int level = 0;
+  int level = 0;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -30,6 +30,6 @@ int level = 0;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(level - Climber.getInstance().ticksEncoder.getPosition()) < 1;
+    return !Climber.getInstance().lowLimitBool; // Low Limit Switch Triggered
   }
 }

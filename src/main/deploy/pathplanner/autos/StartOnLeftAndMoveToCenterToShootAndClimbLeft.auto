@@ -25,20 +25,8 @@
                 "data": {
                   "pathName": "PrepareLeftClimberApproach"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "RaiseClimb"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climber"
           }
         }
       ]

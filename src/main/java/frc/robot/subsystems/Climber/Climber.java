@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,10 +21,13 @@ public class Climber extends SubsystemBase {
   public SparkMax climberMotor;
   public SparkClosedLoopController pidController;
   public RelativeEncoder ticksEncoder;
+  public DigitalInput lowLimitSwitch;
+  public boolean lowLimitBool;
   public Climber() {
     climberMotor = new SparkMax(Constants.ClimberConstants.climberMotorId, MotorType.kBrushless);
     ticksEncoder = climberMotor.getEncoder();
     pidController = climberMotor.getClosedLoopController();
+    lowLimitSwitch = new DigitalInput(4);
   }
 
   public void setTarget(int level) {
@@ -35,8 +39,15 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    lowLimitBool = lowLimitSwitch.get();
+
+    if (!lowLimitBool) climberMotor.set(0);
+    if (ticksEncoder.getPosition() < -2300) climberMotor.set(0);
+    if (ticksEncoder.getPosition() > 0) climberMotor.set(0);
+
     SmartDashboard.putNumber("climberTicks", ticksEncoder.getPosition());
     SmartDashboard.putNumber("climberCurrent", climberMotor.getOutputCurrent());
+    SmartDashboard.putBoolean("Low Limit Switch", lowLimitBool);
   }
   public static Climber instance;
   public static Climber getInstance() {
