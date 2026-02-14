@@ -80,7 +80,7 @@ public class Shooter extends SubsystemBase {
   }
 
   // the x value of the red hub is 468.565
-  // the y value of the  R  E   DD D D D D      hub is 205.84
+  // the y value of the red hub is 205.84
   // distance formula and stuff
 
   

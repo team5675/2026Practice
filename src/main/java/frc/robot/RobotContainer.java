@@ -45,8 +45,16 @@ public class RobotContainer {
             return driverRot;
         }else{
             return -tx*0.03;
-        }
-        
+        }  
+    }
+
+        public double ShooterAngle(double targetRotationFinal, double ShootRot){
+            if(Math.abs(ShootRot) > 0.1){
+                return ShootRot;
+            }
+            else{
+                return -targetRotationFinal*0.03;
+            }
     }
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed

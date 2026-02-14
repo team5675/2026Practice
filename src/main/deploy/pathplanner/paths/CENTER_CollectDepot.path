@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.665,
-        "y": 4.0
+        "x": 0.455,
+        "y": 5.0001410256410255
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5024102564102573,
-        "y": 4.801487179487179
+        "x": 0.45500000000000007,
+        "y": 6.0001410256410255
       },
       "isLocked": false,
-      "linkedName": "C/LSHOOT"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2465641025641045,
-        "y": 5.430384615390429
+        "x": 0.455,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.4324306268347065,
-        "y": 5.5975780218261075
+        "x": 0.45499999999999996,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LCLIMBPOSITON"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.4021259377166966
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "LEFTCLIMBER",
+  "folder": "CENTER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
