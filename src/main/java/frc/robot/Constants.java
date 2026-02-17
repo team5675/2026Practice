@@ -31,7 +31,7 @@ public class Constants {
 
     }
     public class IndexerConstants {
-        public static final int indexerMotorId = 0;
+        public static final int indexerMotorId = 32;
         
     }
     public class ClimberConstants {
@@ -39,13 +39,13 @@ public class Constants {
         
     }
     public class IntakeConstants {
-        public static final int intakeMotorId = 0;
-        public static final int extendMotorId = 0;
+        public static final int intakeMotorId = 30;
+        public static final int extendMotorId = 31;
     }
     public class ShooterConstants {
-        public static final int flyWheelMotorId = 0;
-        public static final int followerMotorId = 0;
-        public static final int providerMotorId = 0;
-        public static final int hoodMotorId = 0;
+        public static final int flyWheelMotorId = 15; //left
+        public static final int followerMotorId = 16;
+        public static final int providerMotorId = 17;
+        public static final int hoodMotorId = 18;
     }
 }
