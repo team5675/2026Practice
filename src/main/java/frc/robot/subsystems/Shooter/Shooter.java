@@ -96,33 +96,6 @@ public class Shooter extends SubsystemBase {
     return a * (distance * distance * distance) + b * (distance * distance) + c * distance + d;
   }
 
-<<<<<<< HEAD
-  // the x value of the red hub is 468.565
-  // the y value of the red hub is 205.84
-  // distance formula and stuff
-
-  
-
-    public void target(CommandSwerveDrivetrain drivetrain) {
-
-      hubPose = new Pose2d(4.625, 4.035, new Rotation2d(0));
-    Pose2d robotPose = drivetrain.getState().Pose;
-    //get distance
-    double distanceToHub = robotPose.getTranslation().getDistance(hubPose.getTranslation());
-    double theHood = hoodCalc(distanceToHub);
-    double targetRotationX = hubPose.getX() - robotPose.getX();
-    double targetRotationY = hubPose.getY() - robotPose.getY();
-    double targetRotationFinal = Math.atan(targetRotationY/targetRotationX);
-    
-  }
-
-  // the hub (4.625, 4.035, 0);
-  
-=======
-  // blue hub (4.625, 4.0346, 0);
-  // red hub (11.916, 4.0346, 0);
->>>>>>> dde57b35e4993be174ccdbe27c559f4601df8723
-
   public void startShooting() {
    if (isProviderActive == false) {
       providerMotor.set(1);
