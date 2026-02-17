@@ -4,48 +4,74 @@
 
 package frc.robot.subsystems.Shooter;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.MathUtil;
 
 public class Shooter extends SubsystemBase {
   public TalonFX flywheelMotor;
   public TalonFX followerMotor;
-  public TalonFX hoodMotor;
+  public SparkMax hoodMotor;
   public TalonFX providerMotor;
   public boolean isFlywheelActive = false;
   public boolean isProviderActive = false;
   public double distanceToHub;
   public Pose2d hubPose;
   public Follower follower;
+  public double rps;
+  private final VelocityTorqueCurrentFOC flywheelVelocity;
         
   public Shooter() {
-    flywheelMotor = new TalonFX(Constants.ShooterConstants.flyWheelMotorId, "Default Name");
-    followerMotor = new TalonFX(Constants.ShooterConstants.followerMotorId, "Default Name");
-    hoodMotor = new TalonFX(Constants.ShooterConstants.hoodMotorId, "Default Name");
-    providerMotor = new TalonFX(Constants.ShooterConstants.providerMotorId, "Default Name");
+    flywheelMotor = new TalonFX(Constants.ShooterConstants.flyWheelMotorId, "canivore");
+    followerMotor = new TalonFX(Constants.ShooterConstants.followerMotorId, "canivore");
+    hoodMotor = new SparkMax(Constants.ShooterConstants.hoodMotorId, MotorType.kBrushless);
+    providerMotor = new TalonFX(Constants.ShooterConstants.providerMotorId, "canivore");
 
-    follower = new Follower(flywheelMotor.getDeviceID(),  MotorAlignmentValue.Aligned);
+    flywheelVelocity =
+    new VelocityTorqueCurrentFOC(0); 
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+        // Current limits — protect motor and battery
+        config.CurrentLimits.StatorCurrentLimit = 80;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.SupplyCurrentLimit = 40;
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+        // Closed-loop gains (Slot 0)
+        config.Slot0.kS = 8.0;  // Static friction (Amps for FOC)
+        config.Slot0.kV = 0.1;  // Velocity feedforward
+        config.Slot0.kA = 0.0;  // Acceleration feedforward
+        config.Slot0.kP = 12.0;   // Proportional
+        config.Slot0.kI = 0.0;   // Integral (leave at 0 for flywheels!)
+        config.Slot0.kD = 0.04;   // Derivative
+
+        flywheelMotor.getConfigurator().apply(config);  
+        
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        followerMotor.getConfigurator().apply(config);
+
+    follower = new Follower(flywheelMotor.getDeviceID(),  MotorAlignmentValue.Opposed);
     followerMotor.setControl(follower);
   }
 
   public void activateShooter() {
     //activate shooter at the start of the match
-    if (isFlywheelActive = false) {
+    if (isFlywheelActive == false) {
       flywheelMotor.set(0.2);
       isFlywheelActive = true;
     }
@@ -98,7 +124,7 @@ public class Shooter extends SubsystemBase {
 >>>>>>> dde57b35e4993be174ccdbe27c559f4601df8723
 
   public void startShooting() {
-   if (isProviderActive = false) {
+   if (isProviderActive == false) {
       providerMotor.set(1);
       isProviderActive = true;
    }
@@ -110,8 +136,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFlywheelRPM(double rpm){
-    VelocityVoltage rpmSpeed = new VelocityVoltage(rpm / 60.0);
-    //flywheelMotor.setControl(rpmSpeed);
+  
+  //  flywheelMotor.set(rpm);
+  //   followerMotor.set(rpm);
+  
+        rps = rpm / 60;
+        flywheelMotor.setControl(flywheelVelocity.withVelocity(rps));
+        
+        //followerMotor.setControl(flywheelVelocity.withVelocity(rps));
+
+        SmartDashboard.putNumber("flywheel Speed", flywheelMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("follower Speed", followerMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("rpm", rpm);
   }
   
 
