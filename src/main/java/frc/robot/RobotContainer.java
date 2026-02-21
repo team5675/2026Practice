@@ -41,8 +41,8 @@ public class RobotContainer {
 
     private final CommandXboxController driverController = new CommandXboxController(0);
 
-    public CommandSwerveDrivetrain drivetrain;
-    public CommandSwerveDrivetrain getDrivetrain(){
+    public static CommandSwerveDrivetrain drivetrain;
+    public static CommandSwerveDrivetrain getDrivetrain(){
         if (drivetrain == null){
             drivetrain = TunerConstants.createDrivetrain();
         }
@@ -61,6 +61,8 @@ public class RobotContainer {
     }
 
     public RobotContainer() {
+        RobotContainer.getDrivetrain();
+        
         NamedCommands.registerCommand("RaiseClimber", new RaiseClimbCommand());
         NamedCommands.registerCommand("Climber", new ClimbCommand());
 
@@ -71,6 +73,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        
 
              drivetrain.setDefaultCommand(
             
@@ -107,7 +110,7 @@ public class RobotContainer {
 
                 return aimAtHub.withVelocityX(flip*driverController.getLeftY() * MaxSpeed)
                     .withVelocityY(flip*driverController.getLeftX() * MaxSpeed)
-                    .withTargetDirection(Aim.getInstance(drivetrain).angleToHub);
+                    .withTargetDirection(Aim.getInstance().angleToHub);
             }
         ));
     }

@@ -15,16 +15,18 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Aim extends SubsystemBase {
   private CommandSwerveDrivetrain drivetrain;
   public Rotation2d angleToHub;
   public Translation2d diffToHub;
+  public double distanceToHub;
 
-  public Aim(CommandSwerveDrivetrain drive) {
+  public Aim() {
     angleToHub = new Rotation2d();
     diffToHub = new Translation2d();
-    drivetrain = drive;
+    drivetrain = RobotContainer.getDrivetrain();
   }
 
   @Override
@@ -45,7 +47,7 @@ public class Aim extends SubsystemBase {
 
     diffToHub = new Translation2d(dx, dy);
 
-
+    distanceToHub = Math.hypot(dx,dy);
     SmartDashboard.putNumber("Aim/HubX", hub.getX());
     SmartDashboard.putNumber("Aim/HubY", hub.getY());
     SmartDashboard.putNumber("Aim/Hub Angle (deg)", angleToHub.getDegrees());
@@ -59,9 +61,9 @@ public class Aim extends SubsystemBase {
   }
 
   private static Aim instance;
-  public static Aim getInstance(CommandSwerveDrivetrain drive) {
+  public static Aim getInstance() {
     if (instance == null) {
-      instance = new Aim(drive);
+      instance = new Aim();
     }
     return instance;
   }
