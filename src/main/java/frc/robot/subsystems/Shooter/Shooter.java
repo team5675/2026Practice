@@ -15,6 +15,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,20 +24,22 @@ public class Shooter extends SubsystemBase {
   public TalonFX flywheelMotor;
   public TalonFX followerMotor;
   public SparkMax hoodMotor;
-  public TalonFX providerMotor;
+  public TalonFX feederMotor;
   public boolean isFlywheelActive = false;
   public boolean isProviderActive = false;
   public double distanceToHub;
   public Pose2d hubPose;
   public Follower follower;
   public double rps;
+  public InterpolatingDoubleTreeMap lutRPM;
+  public InterpolatingDoubleTreeMap lutHood;
   private final VelocityTorqueCurrentFOC flywheelVelocity;
         
   public Shooter() {
     flywheelMotor = new TalonFX(Constants.ShooterConstants.flyWheelMotorId, "canivore");
     followerMotor = new TalonFX(Constants.ShooterConstants.followerMotorId, "canivore");
     hoodMotor = new SparkMax(Constants.ShooterConstants.hoodMotorId, MotorType.kBrushless);
-    providerMotor = new TalonFX(Constants.ShooterConstants.providerMotorId, "canivore");
+    feederMotor = new TalonFX(Constants.ShooterConstants.providerMotorId, "canivore");
 
     flywheelVelocity =
     new VelocityTorqueCurrentFOC(0); 
@@ -45,8 +48,8 @@ public class Shooter extends SubsystemBase {
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-        // Current limits — protect motor and battery
-        config.CurrentLimits.StatorCurrentLimit = 80;
+        // Current limits
+        config.CurrentLimits.StatorCurrentLimit = 120;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.CurrentLimits.SupplyCurrentLimit = 40;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -67,71 +70,65 @@ public class Shooter extends SubsystemBase {
 
     follower = new Follower(flywheelMotor.getDeviceID(),  MotorAlignmentValue.Opposed);
     followerMotor.setControl(follower);
+
+    // Initialize and setup lookup tables
+    lutRPM = new InterpolatingDoubleTreeMap();
+    lutHood = new InterpolatingDoubleTreeMap();
+    lookupTableSetup();
   }
 
-  public void activateShooter() {
-    //activate shooter at the start of the match
-    if (isFlywheelActive == false) {
-      flywheelMotor.set(0.2);
-      isFlywheelActive = true;
-    }
-  }
-
-  public double hoodCalc(double distance) {
-    distance = distanceToHub;
-    double a = 1.0;
-    double b = 1.0;
-    double c = 1.0;
-    double d = 1.0;
-
-    return a * (distance * distance * distance) + b * (distance * distance) + c * distance + d;
-  }
-
-  public double rpmCalc(double distance) {
-    distance = distanceToHub;
-    double a = 1.0;
-    double b = 1.0;
-    double c = 1.0;
-    double d = 1.0;
-    return a * (distance * distance * distance) + b * (distance * distance) + c * distance + d;
-  }
-
-  public void startShooting() {
-   if (isProviderActive == false) {
-      providerMotor.set(1);
-      isProviderActive = true;
-   }
-  }
-
-  public void stopShooting() {
-    providerMotor.set(0);
-    isProviderActive = false;
-  }
-
+  
   public void setFlywheelRPM(double rpm){
-  
-  //  flywheelMotor.set(rpm);
-  //   followerMotor.set(rpm);
-  
-        rps = rpm / 60;
-        flywheelMotor.setControl(flywheelVelocity.withVelocity(rps));
-        
-        //followerMotor.setControl(flywheelVelocity.withVelocity(rps));
-
-        SmartDashboard.putNumber("flywheel Speed", flywheelMotor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("follower Speed", followerMotor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("rpm", rpm);
+    rps = rpm / 60;
+    flywheelMotor.setControl(flywheelVelocity.withVelocity(rps));
+    
+    SmartDashboard.putNumber("flywheel Speed", flywheelMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("follower Speed", followerMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("rpm", rpm);
   }
-  
+      
+  public void runFeederMotor(){
+    feederMotor.set(-0.8); //80% power
+  }
 
-  public void deactivateShooter() {
-    flywheelMotor.set(0);
-    isFlywheelActive = false;
+  public void stopFlywheel(){
+    flywheelMotor.stopMotor();
+    feederMotor.stopMotor();
+  }
+
+  public void setHood(double angle){
+    //ticks based
+    
+    //maxTicks = Constants.ShooterConstants.maxHoodTicks;
+
+
   }
 
   @Override
   public void periodic() {
+    // double poseX = Aim.getInstance().diffToHub.getX();
+    // double poseY = Aim.getInstance().diffToHub.getY();
     
+    // double distanceToHub = Math.hypot(poseY,poseX);
+    
+    // double hoodAngle = hoodCalc(distanceToHub);
+
+    // setHood(hoodAngle);
+  }
+  
+  public double hoodCalc(double distance) {
+    return lutHood.get(distance);
+  }
+
+  public double rpmCalc(double distance) {
+    return lutRPM.get(distance);
+  }
+
+  private void lookupTableSetup(){
+    //key is distance
+    lutRPM.put(0.0,0.0);
+
+    lutHood.put(0.0,0.0);
   }
 
   public static Shooter instance;
