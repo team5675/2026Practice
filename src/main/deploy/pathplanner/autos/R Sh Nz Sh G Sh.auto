@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "beign to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "movetogatherlocation"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "gather fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootaftergather"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "regatherfuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "reshoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "reshoot2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "REALLEFTAUTOS",
+  "choreoAuto": false
+}
