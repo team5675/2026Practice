@@ -296,7 +296,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Field2d m_field;
     private SwerveDrivePoseEstimator m_odometryOnlyEstimator;
-    public String[] limelightNames = { LimelightConstants.llHalio, LimelightConstants.llWide, LimelightConstants.llCoral, LimelightConstants.llBack };
+    public String[] limelightNames = { LimelightConstants.llHalio, LimelightConstants.llWide, LimelightConstants.llBack };
     
     public void setupDefaults() {
         m_field = new Field2d();
