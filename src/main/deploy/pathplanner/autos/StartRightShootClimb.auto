@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "BackTowardsTower"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of New Path"
+            "pathName": "Climb"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 9.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of Copy of New Path"
+            "name": "ClimbCommand"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
-  "folder": "Center Auto",
+  "resetOdom": false,
+  "folder": "Real Autos",
   "choreoAuto": false
 }

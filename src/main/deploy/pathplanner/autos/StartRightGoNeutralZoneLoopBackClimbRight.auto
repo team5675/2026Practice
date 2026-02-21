@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BackwardsAndTurnLeftToShoot2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RotateUnderTrenchAndLineUpWithCenter2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveTroughCenterAndLoopBack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MoveThroughTrenchAndShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ClimbCommand"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

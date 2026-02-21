@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of BackwardsAndTurnLeftToShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RotateUnderTrenchAndLineUpWithCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of DriveThroughAndCollectBallsFromCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of GoThroughOtherTrenchAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReturnToNeutralZone"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RunThroughNeutralZone"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

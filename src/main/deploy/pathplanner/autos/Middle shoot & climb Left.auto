@@ -15,17 +15,11 @@
           "data": {
             "pathName": "move to left side of climb"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Climb"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Real Autos",
   "choreoAuto": false
 }

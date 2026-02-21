@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.5,
-        "y": 3.675
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2638963435219592,
-        "y": 5.640830257516832
+        "x": 3.9197598486533956,
+        "y": 4.107164168530955
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2465641025641045,
-        "y": 5.430384615390429
+        "x": 2.3,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 1.8094281262891148,
-        "y": 4.8065217469138855
+        "x": 1.9309624048930794,
+        "y": 3.994915475771388
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LCLIMBPOSITON"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -0.4021259377166966
+    "velocity": 2.0,
+    "rotation": 165.0
   },
   "reversed": false,
   "folder": "No",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.97538145896874
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
