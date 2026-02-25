@@ -6,13 +6,14 @@
     "CENTER",
     "LEFT",
     "LEFTCLIMBER",
-    "New Folder",
+    "REALLEFTPATHS",
     "RIGHT",
     "RIGHTCLIMBER"
   ],
   "autoFolders": [
-    "RIGHTCLIMBERS",
-    "LEFTCLIMBERS"
+    "LEFTCLIMBERS",
+    "REALLEFTAUTOS",
+    "RIGHTCLIMBERS"
   ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,
