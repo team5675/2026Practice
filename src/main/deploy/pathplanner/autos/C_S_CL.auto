@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DONTUSEATALLCOSTS-SillyTeeheeMap"
+            "pathName": "Middle move shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DONTUSE"
+            "pathName": "move to left side of climb"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
-  "folder": "Center Auto",
+  "resetOdom": true,
+  "folder": "Center Autos",
   "choreoAuto": false
 }

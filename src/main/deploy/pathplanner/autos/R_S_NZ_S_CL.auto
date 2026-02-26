@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BackwardsAndTurnLeftToShoot2"
+            "pathName": "BackwardsAndTurnLeftToShoot"
           }
         },
         {
@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RotateUnderTrenchAndLineUpWithCenter2"
+            "pathName": "RotateUnderTrenchAndLineUpWithCenter"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DriveTroughCenterAndLoopBack"
+            "pathName": "DriveThroughAndCollectBallsFromCenter"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MoveThroughTrenchAndShoot"
+            "pathName": "GoThroughOtherTrenchAndShoot"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ClimbRight"
+            "pathName": "ClimbLeft"
           }
         },
         {
@@ -56,6 +56,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "Real Autos",
+  "folder": "Right Autos",
   "choreoAuto": false
 }

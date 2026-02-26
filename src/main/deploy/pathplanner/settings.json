@@ -6,14 +6,19 @@
     "CENTER",
     "LEFT",
     "LEFTCLIMBER",
-    "REALLEFTPATHS",
+    "CenterPaths",
     "RIGHT",
-    "RIGHTCLIMBER"
+    "RIGHTCLIMBER",
+    "StartRightClimb",
+    "StartRightClimbLeft",
+    "StartRightClimbRight",
+    "StartRightNeutralZone2"
   ],
   "autoFolders": [
     "LEFTCLIMBERS",
-    "REALLEFTAUTOS",
-    "RIGHTCLIMBERS"
+    "Center Autos",
+    "RIGHTCLIMBERS",
+    "Right Autos"
   ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,

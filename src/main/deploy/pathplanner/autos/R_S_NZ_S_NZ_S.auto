@@ -7,55 +7,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BackwardsAndTurnLeftToShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
+            "pathName": "Copy of BackwardsAndTurnLeftToShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RotateUnderTrenchAndLineUpWithCenter"
+            "pathName": "Copy of RotateUnderTrenchAndLineUpWithCenter"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DriveThroughAndCollectBallsFromCenter"
+            "pathName": "Copy of DriveThroughAndCollectBallsFromCenter"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "GoThroughOtherTrenchAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
+            "pathName": "Copy of GoThroughOtherTrenchAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ClimbLeft"
+            "pathName": "ReturnToNeutralZone"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ClimbCommand"
+            "pathName": "RunThroughNeutralZone"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot"
           }
         }
       ]
     }
   },
   "resetOdom": false,
-  "folder": "Real Autos",
+  "folder": "Right Autos",
   "choreoAuto": false
 }
